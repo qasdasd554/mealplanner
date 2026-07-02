@@ -7,8 +7,8 @@ class ApiConfig {
       final uri = Uri.base;
       // Jeśli działamy w GitHub Codespaces (web)
       if (uri.host.contains('app.github.dev')) {
-        // Zamieniamy jakikolwiek port frontendu (np. -8080, -8081, -34567) na -8000 (backend)
-        final newHost = uri.host.replaceFirst(RegExp(r'-\d+'), '-8000');
+        // Zamieniamy końcowy numer portu w subdomenie Codespaces na -8000 (backend)
+        final newHost = uri.host.replaceFirst(RegExp(r'-\d+(?=\.app\.github\.dev$)'), '-8000');
         return '${uri.scheme}://$newHost';
       }
       // Jeśli to lokalny serwer webowy na komputerze
