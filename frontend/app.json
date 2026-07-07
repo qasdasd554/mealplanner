@@ -14,7 +14,7 @@
     },
     "android": {
       "package": "com.meal_planner_polska_v1",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"

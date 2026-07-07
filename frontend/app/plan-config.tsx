@@ -19,22 +19,23 @@ import { colors, font, radius, shadow, spacing } from "@/src/lib/theme";
 
 const DAYS_OPTIONS = [1, 2, 3, 5, 7, 10, 14];
 const HOUSEHOLD_OPTIONS = [1, 2, 3, 4, 5, 6];
-const MEALS_OPTIONS: { value: number; label: string; hint: string }[] = [
-  { value: 1, label: "1 posiłek", hint: "tylko obiad" },
-  { value: 2, label: "2 posiłki", hint: "śniadanie + kolacja" },
-  { value: 3, label: "3 posiłki", hint: "bez przekąsek" },
-  { value: 4, label: "4 posiłki", hint: "z przekąską" },
-  { value: 5, label: "5 posiłków", hint: "z II śniadaniem i podwieczorkiem" },
+
+const SLOT_OPTIONS: { key: string; label: string; icon: string }[] = [
+  { key: "śniadanie", label: "Śniadanie", icon: "sunny-outline" },
+  { key: "obiad", label: "Obiad", icon: "restaurant-outline" },
+  { key: "kolacja", label: "Kolacja", icon: "moon-outline" },
+  { key: "przekąska", label: "Przekąska", icon: "cafe-outline" },
 ];
 
 export default function PlanConfigScreen() {
   const insets = useSafeAreaInsets();
   const [stores, setStores] = useState<Store[]>([]);
   const [days, setDays] = useState(5);
-  const [mealsPerDay, setMealsPerDay] = useState(3);
+  const [selectedSlots, setSelectedSlots] = useState<string[]>(["śniadanie", "obiad", "kolacja"]);
   const [householdSize, setHouseholdSize] = useState(2);
   const [storeId, setStoreId] = useState<string | null>(null);
   const [budgetText, setBudgetText] = useState("");
+  const [targetKcalText, setTargetKcalText] = useState("");
   const [minCost, setMinCost] = useState<number | null>(null);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,14 +50,25 @@ export default function PlanConfigScreen() {
   }, []);
 
   useEffect(() => {
-    if (!storeId) return;
+    if (!storeId || selectedSlots.length === 0) return;
     setMinCost(null);
     api<{ min_cost: number }>(
-      `/meal-plans/min-cost?days=${days}&meals_per_day=${mealsPerDay}&store_id=${storeId}&household_size=${householdSize}`,
+      `/meal-plans/min-cost?days=${days}&meals_per_day=${selectedSlots.length}&store_id=${storeId}&household_size=${householdSize}`,
     )
       .then((data) => setMinCost(data.min_cost))
       .catch(() => setMinCost(null));
-  }, [days, mealsPerDay, storeId, householdSize]);
+  }, [days, selectedSlots, storeId, householdSize]);
+
+  const toggleSlot = (slot: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedSlots((prev) => {
+      if (prev.includes(slot)) {
+        if (prev.length <= 1) return prev; // minimum 1 slot
+        return prev.filter((s) => s !== slot);
+      }
+      return [...prev, slot];
+    });
+  };
 
   const parsedBudget = budgetText.trim()
     ? parseFloat(budgetText.replace(",", "."))
@@ -64,8 +76,12 @@ export default function PlanConfigScreen() {
   const budgetTooLow =
     parsedBudget !== null && minCost !== null && !isNaN(parsedBudget) && parsedBudget < minCost;
 
+  const parsedKcal = targetKcalText.trim()
+    ? parseInt(targetKcalText, 10)
+    : null;
+
   const generate = async () => {
-    if (!storeId) return;
+    if (!storeId || selectedSlots.length === 0) return;
     setError(null);
     if (parsedBudget !== null && (isNaN(parsedBudget) || parsedBudget <= 0)) {
       setError("Podaj prawidłową kwotę budżetu");
@@ -77,16 +93,22 @@ export default function PlanConfigScreen() {
       );
       return;
     }
+    if (parsedKcal !== null && (isNaN(parsedKcal) || parsedKcal < 800 || parsedKcal > 6000)) {
+      setError("Cel kaloryczny musi być między 800 a 6000 kcal");
+      return;
+    }
     setGenerating(true);
     try {
       await api("/meal-plans/generate", {
         method: "POST",
         body: {
           days,
-          meals_per_day: mealsPerDay,
+          meals_per_day: selectedSlots.length,
+          slots: selectedSlots,
           store_id: storeId,
           household_size: householdSize,
           ...(parsedBudget !== null ? { budget: parsedBudget } : {}),
+          ...(parsedKcal !== null ? { target_kcal: parsedKcal } : {}),
         },
       });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -96,9 +118,6 @@ export default function PlanConfigScreen() {
       setGenerating(false);
     }
   };
-
-  const mealsHint =
-    MEALS_OPTIONS.find((m) => m.value === mealsPerDay)?.hint || "";
 
   return (
     <View style={styles.container} testID="plan-config-screen">
@@ -166,35 +185,45 @@ export default function PlanConfigScreen() {
           ))}
         </ScrollView>
 
-        <Text style={styles.label}>Posiłki dziennie</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chipScrollRow}
-        >
-          {MEALS_OPTIONS.map((opt) => (
-            <Pressable
-              key={opt.value}
-              testID={`meals-chip-${opt.value}`}
-              style={[styles.chip, mealsPerDay === opt.value && styles.chipActive]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setMealsPerDay(opt.value);
-              }}
-            >
-              <Text
-                style={[styles.chipText, mealsPerDay === opt.value && styles.chipTextActive]}
+        <Text style={styles.label}>Jakie posiłki chcesz w planie?</Text>
+        <View style={styles.slotGrid}>
+          {SLOT_OPTIONS.map((opt) => {
+            const active = selectedSlots.includes(opt.key);
+            return (
+              <Pressable
+                key={opt.key}
+                testID={`slot-toggle-${opt.key}`}
+                style={[styles.slotChip, active && styles.slotChipActive]}
+                onPress={() => toggleSlot(opt.key)}
               >
-                {opt.label}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-        {!!mealsHint && (
-          <Text style={styles.mealsHint} testID="meals-hint">
-            {mealsHint}
+                <Ionicons
+                  name={active ? "checkmark-circle" : (opt.icon as any)}
+                  size={20}
+                  color={active ? colors.brand : colors.muted}
+                />
+                <Text style={[styles.slotChipText, active && styles.slotChipTextActive]}>
+                  {opt.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Text style={styles.label}>Cel kaloryczny dziennie (kcal)</Text>
+        <View style={styles.budgetWrap}>
+          <TextInput
+            testID="kcal-input"
+            style={styles.budgetInput}
+            placeholder="np. 2000 (opcjonalnie)"
+            placeholderTextColor={colors.muted}
+            keyboardType="number-pad"
+            value={targetKcalText}
+            onChangeText={setTargetKcalText}
+          />
+          <Text style={styles.budgetHint}>
+            Plan będzie dążył do tej wartości kalorycznej na każdy dzień
           </Text>
-        )}
+        </View>
 
         <Text style={styles.label}>Sklep</Text>
         {stores.map((store) => (
@@ -256,7 +285,7 @@ export default function PlanConfigScreen() {
           testID="generate-plan-submit"
           style={({ pressed }) => [styles.generateBtn, pressed && { opacity: 0.85 }]}
           onPress={generate}
-          disabled={generating || !storeId}
+          disabled={generating || !storeId || selectedSlots.length === 0}
         >
           {generating ? (
             <ActivityIndicator color={colors.onBrand} />
@@ -333,13 +362,35 @@ const styles = StyleSheet.create({
   chipActive: { backgroundColor: colors.brandTertiary, borderColor: colors.brandSecondary },
   chipText: { fontFamily: font.regular, fontSize: 14, color: colors.onSurfaceTertiary },
   chipTextActive: { color: colors.onBrandTertiary, fontWeight: "600" },
-  mealsHint: {
-    fontFamily: font.regular,
-    fontSize: 12,
-    color: colors.muted,
+  slotGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     paddingHorizontal: spacing.lg,
-    marginTop: spacing.sm,
-    fontStyle: "italic",
+    gap: spacing.sm,
+  },
+  slotChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+    paddingVertical: 10,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surfaceSecondary,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+  },
+  slotChipActive: {
+    backgroundColor: colors.brandTertiary,
+    borderColor: colors.brand,
+  },
+  slotChipText: {
+    fontFamily: font.regular,
+    fontSize: 14,
+    color: colors.onSurfaceTertiary,
+  },
+  slotChipTextActive: {
+    color: colors.onBrandTertiary,
+    fontWeight: "600",
   },
   storeCard: {
     flexDirection: "row",

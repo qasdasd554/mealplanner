@@ -103,14 +103,21 @@ class RecipeCreate(BaseModel):
 
 class GeneratePlanRequest(BaseModel):
     days: int = Field(ge=1, le=14)
-    meals_per_day: int = Field(ge=1, le=5)
+    meals_per_day: int = Field(ge=1, le=5, default=3)
     store_id: str
     household_size: int = Field(ge=1, le=12, default=2)
     budget: Optional[float] = Field(default=None, gt=0)
+    target_kcal: Optional[int] = Field(default=None, ge=800, le=6000)
+    slots: Optional[List[str]] = Field(default=None)
 
 
 class ToggleItemRequest(BaseModel):
     checked: bool
+
+
+class SwapRequest(BaseModel):
+    day: int
+    slot: str
 
 
 # ── Auth utils ───────────────────────────────────────────────────
@@ -343,11 +350,18 @@ def make_entry(recipe: dict, day: int, slot: str) -> dict:
     }
 
 
-async def plan_context(user: dict, store_id: str, meals_per_day: int):
+async def plan_context(user: dict, store_id: str, meals_per_day: int, custom_slots: Optional[List[str]] = None):
     store = await db.stores.find_one({"id": store_id}, {"_id": 0})
     if not store:
         raise HTTPException(status_code=400, detail="Nieznany sklep")
-    slots = slots_for(meals_per_day)
+    if custom_slots:
+        valid = {"śniadanie", "obiad", "kolacja", "przekąska"}
+        for s in custom_slots:
+            if s not in valid:
+                raise HTTPException(status_code=400, detail=f"Nieprawidłowy slot: {s}")
+        slots = custom_slots
+    else:
+        slots = slots_for(meals_per_day)
     query = {"$or": [{"is_custom": False}, {"owner_id": user["id"]}]}
     all_recipes = await db.recipes.find(query, {"_id": 0}).to_list(500)
     by_type: dict = {}
@@ -391,10 +405,14 @@ async def get_min_cost(
 
 @api.post("/meal-plans/generate", status_code=201)
 async def generate_plan(payload: GeneratePlanRequest, user: dict = Depends(get_current_user)):
-    if payload.meals_per_day not in MEAL_SLOT_LAYOUTS:
-        raise HTTPException(status_code=400, detail="Nieobsługiwana liczba posiłków")
+    if payload.slots:
+        effective_meals_per_day = len(payload.slots)
+    else:
+        effective_meals_per_day = payload.meals_per_day
+        if payload.meals_per_day not in MEAL_SLOT_LAYOUTS:
+            raise HTTPException(status_code=400, detail="Nieobsługiwana liczba posiłków")
     store, slots, all_recipes, by_type = await plan_context(
-        user, payload.store_id, payload.meals_per_day
+        user, payload.store_id, effective_meals_per_day, payload.slots
     )
     pmap = await products_map()
     recipes_by_id = {r["id"]: r for r in all_recipes}
@@ -429,6 +447,7 @@ async def generate_plan(payload: GeneratePlanRequest, user: dict = Depends(get_c
                       key=lambda r: recipe_unit_cost(r, pmap, multiplier))
             for slot in slots
         }
+        MAX_RECIPE_REPEATS_BUDGET = 3
         def total_cost():
             items = build_shopping_items(pmap, entries, recipes_by_id, multiplier, household_size)
             return round(sum(i["price"] for i in items), 2)
@@ -437,12 +456,58 @@ async def generate_plan(payload: GeneratePlanRequest, user: dict = Depends(get_c
                 (i, recipe_unit_cost(recipes_by_id[e["recipe_id"]], pmap, multiplier))
                 for i, e in enumerate(entries)
                 if e["recipe_id"] != cheapest_for[e["slot"]]["id"]
+                and sum(1 for x in entries if x["recipe_id"] == cheapest_for[e["slot"]]["id"]) < MAX_RECIPE_REPEATS_BUDGET
             ]
             if not candidates:
                 break
             idx = max(candidates, key=lambda c: c[1])[0]
             entry = entries[idx]
             entries[idx] = make_entry(cheapest_for[entry["slot"]], entry["day"], entry["slot"])
+
+    # ── Dopasowanie do celu kalorycznego ──
+    if payload.target_kcal is not None:
+        MAX_RECIPE_REPEATS = 3
+        for _kcal_pass in range(payload.days * len(slots) * 2):
+            worst_day = None
+            worst_diff = 0
+            for day in range(1, payload.days + 1):
+                day_kcal = sum(
+                    e["nutrition_per_serving"].get("kcal", 0)
+                    for e in entries if e["day"] == day
+                )
+                diff = abs(day_kcal - payload.target_kcal)
+                if diff > worst_diff:
+                    worst_diff = diff
+                    worst_day = day
+            if worst_day is None or worst_diff <= payload.target_kcal * 0.15:
+                break
+            day_entries = [e for e in entries if e["day"] == worst_day]
+            day_kcal = sum(e["nutrition_per_serving"].get("kcal", 0) for e in day_entries)
+            need_less = day_kcal > payload.target_kcal
+            best_swap = None
+            best_new_diff = worst_diff
+            for entry in day_entries:
+                mt = slot_meal_type(entry["slot"])
+                for candidate in by_type.get(mt, []):
+                    if candidate["id"] == entry["recipe_id"]:
+                        continue
+                    count = sum(1 for e in entries if e["recipe_id"] == candidate["id"])
+                    if count >= MAX_RECIPE_REPEATS:
+                        continue
+                    new_kcal = day_kcal - entry["nutrition_per_serving"].get("kcal", 0) + candidate["nutrition_per_serving"].get("kcal", 0)
+                    new_diff = abs(new_kcal - payload.target_kcal)
+                    if new_diff < best_new_diff:
+                        if need_less and candidate["nutrition_per_serving"].get("kcal", 0) < entry["nutrition_per_serving"].get("kcal", 0):
+                            best_new_diff = new_diff
+                            best_swap = (entry, candidate)
+                        elif not need_less and candidate["nutrition_per_serving"].get("kcal", 0) > entry["nutrition_per_serving"].get("kcal", 0):
+                            best_new_diff = new_diff
+                            best_swap = (entry, candidate)
+            if best_swap is None:
+                break
+            old_entry, new_recipe = best_swap
+            idx = entries.index(old_entry)
+            entries[idx] = make_entry(new_recipe, old_entry["day"], old_entry["slot"])
 
     daily = []
     for day in range(1, payload.days + 1):
@@ -462,7 +527,7 @@ async def generate_plan(payload: GeneratePlanRequest, user: dict = Depends(get_c
         "store_id": store["id"],
         "store_name": store["name"],
         "days": payload.days,
-        "meals_per_day": payload.meals_per_day,
+        "meals_per_day": len(slots),
         "household_size": household_size,
         "budget": payload.budget,
         "entries": entries,
@@ -497,6 +562,59 @@ async def toggle_item(item_id: str, payload: ToggleItemRequest, user: dict = Dep
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Nie znaleziono pozycji")
     return {"ok": True}
+
+
+@api.post("/meal-plans/active/swap")
+async def swap_meal(payload: SwapRequest, user: dict = Depends(get_current_user)):
+    plan = await db.meal_plans.find_one({"user_id": user["id"]}, {"_id": 0})
+    if not plan:
+        raise HTTPException(status_code=404, detail="Brak aktywnego planu")
+    entry_idx = None
+    for i, e in enumerate(plan["entries"]):
+        if e["day"] == payload.day and e["slot"] == payload.slot:
+            entry_idx = i
+            break
+    if entry_idx is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono posiłku")
+    old_entry = plan["entries"][entry_idx]
+    mt = slot_meal_type(payload.slot)
+    query = {"$or": [{"is_custom": False}, {"owner_id": user["id"]}], "meal_type": mt}
+    candidates = await db.recipes.find(query, {"_id": 0}).to_list(500)
+    candidates = [r for r in candidates if r["id"] != old_entry["recipe_id"]]
+    if not candidates:
+        raise HTTPException(status_code=400, detail="Brak alternatywnych przepisów")
+    new_recipe = random.choice(candidates)
+    plan["entries"][entry_idx] = make_entry(new_recipe, payload.day, payload.slot)
+    # Przelicz dzienną kaloryczność
+    daily = []
+    for day in range(1, plan["days"] + 1):
+        totals = {"kcal": 0.0, "protein": 0.0, "fat": 0.0, "carbs": 0.0}
+        for e in plan["entries"]:
+            if e["day"] == day:
+                for k in totals:
+                    totals[k] += e["nutrition_per_serving"].get(k, 0)
+        daily.append({"day": day, **{k: round(v) for k, v in totals.items()}})
+    plan["daily_nutrition"] = daily
+    # Przelicz listę zakupów
+    pmap = await products_map()
+    store = await db.stores.find_one({"id": plan["store_id"]}, {"_id": 0})
+    multiplier = store["price_multiplier"] if store else 1.0
+    all_recipes = await db.recipes.find({}, {"_id": 0}).to_list(500)
+    recipes_by_id = {r["id"]: r for r in all_recipes}
+    plan["shopping_items"] = build_shopping_items(
+        pmap, plan["entries"], recipes_by_id, multiplier, plan.get("household_size", 1)
+    )
+    plan["total_price"] = round(sum(i["price"] for i in plan["shopping_items"]), 2)
+    await db.meal_plans.update_one(
+        {"user_id": user["id"]},
+        {"$set": {
+            "entries": plan["entries"],
+            "daily_nutrition": plan["daily_nutrition"],
+            "shopping_items": plan["shopping_items"],
+            "total_price": plan["total_price"],
+        }},
+    )
+    return plan
 
 
 @api.get("/")
@@ -563,6 +681,7 @@ async def seed():
             "nutrition_total": total,
             "nutrition_per_serving": per_serving,
             "image_url": RECIPE_IMAGES.get(r["name"]),
+            "instructions": r.get("instructions", []),
             "is_custom": False,
             "owner_id": None,
         }

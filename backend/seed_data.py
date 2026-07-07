@@ -55,11 +55,21 @@ RECIPE_IMAGES = {
     "Tosty z jajkiem i awokado": _IMG.format("photo-1525351484163-7529414344d8"),
     "Sałatka z kurczakiem i awokado": _IMG.format("photo-1512621776951-a57141f2eefd"),
     "Kanapki z twarożkiem i ogórkiem": _IMG.format("photo-1598373182133-52452f7691ef"),
+    "Smażony ryż z kurczakiem i warzywami": _IMG.format("photo-1512058564366-18510be2db19"),
+    "Domowy kebab z TikToka": _IMG.format("photo-1561651188-d207bbec4ec3"),
+    "Carbonara klasyczna": _IMG.format("photo-1612874742237-6526221588e3"),
+    "Shakshuka z jajkami": _IMG.format("photo-1590947132387-155cc02f3212"),
+    "Granola z jogurtem i owocami": _IMG.format("photo-1517093728432-a0440f8d45af"),
+    "Owsianka z bananem i masłem orzechowym": _IMG.format("photo-1571748982800-fa51082c2224"),
+    "Wrap z kurczakiem i warzywami": _IMG.format("photo-1626700051175-6818013e1d4f"),
+    "Quesadilla z serem i pieczarkami": _IMG.format("photo-1618040996337-56904b7850b7"),
+    "Bruschetta z pomidorami i bazylią": _IMG.format("photo-1572695157366-5e585ab2b69f"),
+    "Hummus z warzywami i pitą": _IMG.format("photo-1447175008436-054170c2e979"),
+    "Smoothie bowl z owocami": _IMG.format("photo-1590301157890-4810ed352733"),
+    "Tosty z awokado i jajkiem na miękko": _IMG.format("photo-1525351484163-7529414344d8"),
 }
 
 # (nazwa, jednostka, wielkość_opakowania, dział, cena_bazowa, nutrition/100g, waga_1szt_g)
-# UWAGA: "Ryż biały" — wartości dla ryżu SUCHEGO (przepisy podają wagę suchą),
-# poprzednio 130 kcal (ryż ugotowany) zaniżało kaloryczność obiadów.
 PRODUCTS = [
     ("Mleko 2%", "l", 1, "Nabiał", 3.49, {"kcal": 50, "protein": 3.3, "fat": 2.0, "carbs": 4.8, "fiber": 0.0}, None),
     ("Masło extra", "g", 200, "Nabiał", 6.99, {"kcal": 748, "protein": 0.7, "fat": 82.5, "carbs": 0.7, "fiber": 0.0}, None),
@@ -107,15 +117,26 @@ PRODUCTS = [
     ("Mleko migdałowe", "l", 1, "Produkty suche", 7.99, {"kcal": 15, "protein": 0.5, "fat": 1.2, "carbs": 0.3, "fiber": 0.0}, None),
     ("Ser feta", "g", 200, "Nabiał", 6.49, {"kcal": 264, "protein": 14.2, "fat": 21.3, "carbs": 4.1, "fiber": 0.0}, None),
     ("Oliwki czarne", "g", 150, "Produkty suche", 5.99, {"kcal": 115, "protein": 0.8, "fat": 10.7, "carbs": 6.3, "fiber": 3.2}, None),
+    ("Tortilla pszenna", "szt", 1, "Pieczywo", 2.49, {"kcal": 310, "protein": 8.0, "fat": 7.0, "carbs": 52.0, "fiber": 2.0}, 65),
+    ("Majonez", "g", 400, "Przyprawy i sosy", 6.99, {"kcal": 680, "protein": 1.0, "fat": 75.0, "carbs": 1.0, "fiber": 0.0}, None),
+    ("Boczek wędzony", "g", 150, "Mięso i wędliny", 7.99, {"kcal": 350, "protein": 12.0, "fat": 33.0, "carbs": 0.5, "fiber": 0.0}, None),
+    ("Parmezan tarty", "g", 100, "Nabiał", 8.99, {"kcal": 431, "protein": 38.5, "fat": 29.0, "carbs": 3.2, "fiber": 0.0}, None),
+    ("Śmietanka 30%", "ml", 200, "Nabiał", 4.49, {"kcal": 292, "protein": 2.2, "fat": 30.0, "carbs": 3.4, "fiber": 0.0}, None),
+    ("Sos sojowy", "ml", 150, "Przyprawy i sosy", 5.99, {"kcal": 53, "protein": 8.0, "fat": 0.0, "carbs": 4.0, "fiber": 0.0}, None),
+    ("Imbir świeży", "szt", 1, "Warzywa i owoce", 1.99, {"kcal": 80, "protein": 1.8, "fat": 0.8, "carbs": 18.0, "fiber": 2.0}, 15),
+    ("Oregano suszone", "g", 10, "Przyprawy i sosy", 2.99, {"kcal": 265, "protein": 9.0, "fat": 4.3, "carbs": 69.0, "fiber": 42.5}, None),
+    ("Kumin rzymski mielony", "g", 20, "Przyprawy i sosy", 3.99, {"kcal": 375, "protein": 17.8, "fat": 22.3, "carbs": 44.2, "fiber": 10.5}, None),
+    ("Pieczarki", "g", 500, "Warzywa i owoce", 4.99, {"kcal": 22, "protein": 3.1, "fat": 0.3, "carbs": 3.3, "fiber": 1.0}, None),
+    ("Kapusta czerwona", "szt", 1, "Warzywa i owoce", 3.99, {"kcal": 31, "protein": 1.4, "fat": 0.2, "carbs": 7.4, "fiber": 2.1}, 500),
+    ("Granola", "g", 350, "Produkty suche", 9.99, {"kcal": 440, "protein": 10.0, "fat": 15.0, "carbs": 65.0, "fiber": 7.0}, None),
+    ("Cynamon mielony", "g", 15, "Przyprawy i sosy", 3.49, {"kcal": 247, "protein": 4.0, "fat": 1.2, "carbs": 81.0, "fiber": 53.0}, None),
+    ("Pita chlebowa", "szt", 1, "Pieczywo", 1.99, {"kcal": 275, "protein": 9.0, "fat": 1.2, "carbs": 55.0, "fiber": 2.0}, 80),
+    ("Tymianek suszony", "g", 10, "Przyprawy i sosy", 2.99, {"kcal": 276, "protein": 9.1, "fat": 7.4, "carbs": 63.9, "fiber": 37.0}, None),
+    ("Kurkuma mielona", "g", 20, "Przyprawy i sosy", 3.99, {"kcal": 354, "protein": 8.0, "fat": 10.0, "carbs": 65.0, "fiber": 21.0}, None),
 ]
 
 # ══════════════════════════════════════════════════════════════════
 # PRZEPISY — kcal/makro liczone automatycznie ze składników.
-# Korekty "sensowności":
-#  • olej do smażenia liczony wg realnej absorpcji (schabowy 100→40 ml),
-#  • spaghetti: makaron 250→200 g, mięso 300→250 g (realna porcja ~800 kcal),
-#  • ryż liczony jako suchy (349 kcal/100 g zamiast 130 dla ugotowanego),
-#  • jajecznica: dodano pieczywo (było w opisie, brakowało w składnikach).
 # ══════════════════════════════════════════════════════════════════
 RECIPES = [
     # ── PRZEKĄSKI ────────────────────────────────────────────────
@@ -125,6 +146,7 @@ RECIPES = [
         "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 2, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "bezglutenowe", "wegańskie"],
         "ingredients": [("Jabłka", 1, "szt"), ("Masło orzechowe", 30, "g")],
+        "instructions": ["Umyj jabłko i pokrój na cząstki.", "Nałóż masło orzechowe na talerzyk.", "Maczaj cząstki jabłka w maśle orzechowym."]
     },
     {
         "name": "Marchewki z hummusem",
@@ -132,27 +154,58 @@ RECIPES = [
         "cuisine": "azjatycka", "meal_type": "przekąska", "prep_time_min": 5, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "bezglutenowe", "wegańskie"],
         "ingredients": [("Marchew", 0.2, "kg"), ("Hummus", 50, "g")],
+        "instructions": ["Obierz marchewki i pokrój w słupki.", "Wyłóż hummus na talerzyk.", "Podawaj marchewki z hummusem do maczania."]
     },
     {
         "name": "Jogurt naturalny z malinami",
         "description": "Lekka przekąska białkowa — jogurt z garścią świeżych malin.",
         "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 2, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "bezglutenowe", "wegetariańskie"],
-        "ingredients": [("Jogurt naturalny", 150, "g"), ("Maliny", 50, "g")],
+        "ingredients": [("Jogurt naturalny", 150, "g"), ("Maliny", 50, "g"), ("Cynamon mielony", 1, "g")],
+        "instructions": ["Przełóż jogurt do miseczki.", "Umyj maliny i osusz na ręczniku papierowym.", "Ułóż maliny na jogurcie. Opcjonalnie posyp cynamonem."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Koktajl bananowo-malinowy",
         "description": "Kremowy koktajl: zblenduj banana, maliny, jogurt i mleko. Gotowe w 3 minuty.",
         "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 3, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "wegetariańskie", "nowość"],
         "ingredients": [("Banan", 1, "szt"), ("Maliny", 60, "g"), ("Jogurt naturalny", 150, "g"), ("Mleko 2%", 0.1, "l")],
+        "instructions": ["Obierz banana i wrzuć do blendera.", "Dodaj maliny, jogurt i mleko.", "Blenduj przez 30–60 sekund na gładki koktajl.", "Przelej do szklanki i podawaj od razu."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Bułka z hummusem i papryką",
         "description": "Chrupiąca kajzerka posmarowana hummusem, z plastrami świeżej papryki.",
         "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 4, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "wegańskie", "nowość"],
         "ingredients": [("Bułka kajzerka", 1, "szt"), ("Hummus", 40, "g"), ("Papryka czerwona", 0.5, "szt")],
+        "instructions": ["Przekrój bułkę na pół.", "Posmaruj obie połówki hummusem.", "Pokrój paprykę w cienkie paski i ułóż na bułce."]
+    },
+    {
+        "name": "Hummus z warzywami i pitą",
+        "description": "Kremowy hummus podawany z ciepłą pitą i świeżymi warzywami do maczania.",
+        "cuisine": "azjatycka", "meal_type": "przekąska", "prep_time_min": 5, "cook_time_min": 3,
+        "servings": 2, "difficulty": "łatwy", "tags": ["wegańskie", "zdrowe"],
+        "ingredients": [("Hummus", 100, "g"), ("Pita chlebowa", 2, "szt"), ("Marchew", 0.1, "kg"),
+                        ("Ogórek", 0.5, "szt"), ("Papryka czerwona", 0.5, "szt")],
+        "instructions": ["Przełóż hummus do miseczki.", "Podgrzej pity na suchej patelni lub w piekarniku.", "Pokrój marchew, ogórka i paprykę w słupki.", "Podawaj hummus z ciepłą pitą i warzywami."]
+    },
+    {
+        "name": "Smoothie bowl z owocami",
+        "description": "Gęsty koktajl w miseczce z bananem i malinami, posypany granolą.",
+        "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 5, "cook_time_min": 0,
+        "servings": 1, "difficulty": "łatwy", "tags": ["wegetariańskie", "zdrowe"],
+        "ingredients": [("Banan", 1, "szt"), ("Maliny", 60, "g"), ("Jogurt naturalny", 100, "g"),
+                        ("Granola", 30, "g"), ("Mleko 2%", 0.05, "l")],
+        "instructions": ["Zblenduj banana, maliny, jogurt i mleko na gęsty koktajl.", "Przelej do miseczki.", "Posyp granolą i udekoruj kilkoma malinami."]
+    },
+    {
+        "name": "Tosty z awokado i jajkiem na miękko",
+        "description": "Chrupiące tosty z kremowym awokado i jajkiem na miękko — idealna przekąska.",
+        "cuisine": "polska", "meal_type": "przekąska", "prep_time_min": 5, "cook_time_min": 6,
+        "servings": 1, "difficulty": "łatwy", "tags": ["wegetariańskie", "zdrowe"],
+        "ingredients": [("Chleb pszenny", 80, "g"), ("Awokado", 0.5, "szt"), ("Jajka", 1, "szt"),
+                        ("Sól", 1, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Ugotuj jajko na miękko (6 minut w gotującej wodzie).", "Opiecz kromki chleba.", "Rozgnieć połówkę awokado widelcem, dopraw solą i pieprzem.", "Nałóż pastę z awokado na tosty.", "Obierz jajko, przekrój na pół i ułóż na toście."]
     },
     # ── ŚNIADANIA ────────────────────────────────────────────────
     {
@@ -160,7 +213,8 @@ RECIPES = [
         "description": "Owsianka na mleku roślinnym z plastrami banana.",
         "cuisine": "polska", "meal_type": "śniadanie", "prep_time_min": 10, "cook_time_min": 0,
         "servings": 1, "difficulty": "łatwy", "tags": ["wegetariańskie", "zdrowe"],
-        "ingredients": [("Płatki owsiane", 50, "g"), ("Mleko migdałowe", 0.2, "l"), ("Banan", 1, "szt")],
+        "ingredients": [("Płatki owsiane", 50, "g"), ("Mleko migdałowe", 0.2, "l"), ("Banan", 1, "szt"), ("Cynamon mielony", 2, "g")],
+        "instructions": ["Wsyp płatki owsiane do garnka.", "Zalej mlekiem migdałowym i gotuj na małym ogniu 5–7 minut, mieszając.", "Przełóż do miseczki, ułóż plastry banana na wierzchu.", "Opcjonalnie posyp cynamonem."]
     },
     {
         "name": "Jajecznica z pomidorami",
@@ -169,6 +223,7 @@ RECIPES = [
         "servings": 2, "difficulty": "łatwy", "tags": ["szybkie"],
         "ingredients": [("Jajka", 4, "szt"), ("Pomidory", 0.2, "kg"), ("Masło extra", 20, "g"),
                         ("Chleb pszenny", 100, "g"), ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Pokrój pomidory na drobne kawałki.", "Rozpuść masło na patelni na średnim ogniu.", "Wbij jajka, dodaj pomidory, sól i pieprz.", "Mieszaj delikatnie drewnianą łyżką aż jajka się zetną.", "Podawaj z pieczywem."]
     },
     {
         "name": "Kanapki z szynką i serem",
@@ -177,28 +232,59 @@ RECIPES = [
         "servings": 2, "difficulty": "łatwy", "tags": ["szybkie"],
         "ingredients": [("Chleb pszenny", 200, "g"), ("Masło extra", 20, "g"), ("Szynka konserwowa", 100, "g"),
                         ("Ser żółty gouda", 80, "g"), ("Ogórek", 1, "szt"), ("Sałata lodowa", 0.25, "szt")],
+        "instructions": ["Pokrój chleb na kromki i posmaruj masłem.", "Na każdą kromkę ułóż plasterek szynki i sera.", "Dodaj plastry ogórka i liść sałaty.", "Podawaj od razu."]
     },
     {
         "name": "Owsianka z jogurtem",
         "description": "Ciepła owsianka z jogurtem naturalnym, idealna na pożywne śniadanie.",
         "cuisine": "polska", "meal_type": "śniadanie", "prep_time_min": 5, "cook_time_min": 5,
         "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "zdrowe"],
-        "ingredients": [("Płatki owsiane", 100, "g"), ("Mleko 2%", 0.3, "l"), ("Jogurt naturalny", 150, "g"), ("Sól", 1, "g")],
+        "ingredients": [("Płatki owsiane", 100, "g"), ("Mleko 2%", 0.3, "l"), ("Jogurt naturalny", 150, "g"), ("Sól", 1, "g"), ("Cynamon mielony", 1, "g")],
+        "instructions": ["Gotuj płatki owsiane z mlekiem na małym ogniu przez 5 minut.", "Dodaj szczyptę soli i mieszaj.", "Przełóż do miseczki i dodaj jogurt na wierzch.", "Opcjonalnie posyp cynamonem."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Tosty francuskie",
         "description": "Kromki chleba moczone w jajku z mlekiem, smażone na maśle na złoto.",
         "cuisine": "francuska", "meal_type": "śniadanie", "prep_time_min": 5, "cook_time_min": 10,
         "servings": 2, "difficulty": "łatwy", "tags": ["szybkie", "wegetariańskie", "nowość"],
         "ingredients": [("Chleb pszenny", 150, "g"), ("Jajka", 2, "szt"), ("Mleko 2%", 0.1, "l"), ("Masło extra", 20, "g")],
+        "instructions": ["Roztrzep jajka z mlekiem w głębokim talerzu.", "Namocz kromki chleba w mieszance jajecznej.", "Rozgrzej masło na patelni.", "Smaż namoczone kromki na złoty kolor z obu stron (po 2 min)."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Omlet ze szpinakiem i fetą",
         "description": "Puszysty omlet z podsmażonym szpinakiem i pokruszoną fetą.",
         "cuisine": "polska", "meal_type": "śniadanie", "prep_time_min": 5, "cook_time_min": 8,
         "servings": 1, "difficulty": "łatwy", "tags": ["wysokobiałkowe", "bezglutenowe", "nowość"],
         "ingredients": [("Jajka", 3, "szt"), ("Mrożony szpinak", 100, "g"), ("Ser feta", 40, "g"),
                         ("Masło extra", 10, "g"), ("Sól", 1, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Rozmroź szpinak i odciśnij nadmiar wody.", "Roztrzep jajka z solą i pieprzem.", "Rozgrzej masło na patelni i wylej jajka.", "Gdy omlet zacznie się ścinać, rozłóż szpinak i pokruszoną fetę.", "Złóż na pół i smaż jeszcze minutę."]
+    },
+    {
+        "name": "Shakshuka z jajkami",
+        "description": "Jajka gotowane w pikantnym sosie pomidorowym z papryką i cebulą — popularne śniadanie z Bliskiego Wschodu.",
+        "cuisine": "azjatycka", "meal_type": "śniadanie", "prep_time_min": 10, "cook_time_min": 15,
+        "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "bezglutenowe"],
+        "ingredients": [("Jajka", 4, "szt"), ("Passata pomidorowa", 300, "g"), ("Papryka czerwona", 1, "szt"),
+                        ("Cebula", 0.15, "kg"), ("Czosnek", 2, "szt"), ("Oliwa z oliwek", 15, "ml"),
+                        ("Papryka słodka", 3, "g"), ("Kumin rzymski mielony", 2, "g"), ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Na patelni rozgrzej oliwę i podsmaż pokrojoną cebulę i paprykę.", "Dodaj czosnek, paprykę słodką i kumin, smaż minutę.", "Wlej passatę pomidorową, dopraw solą i pieprzem.", "Gotuj sos 5 minut na małym ogniu.", "Zrób 4 wgłębienia w sosie i wbij w nie jajka.", "Przykryj i gotuj 8–10 minut, aż białka się zetną."]
+    },
+    {
+        "name": "Granola z jogurtem i owocami",
+        "description": "Chrupiąca granola z kremowym jogurtem, bananem i malinami — szybkie i pożywne śniadanie.",
+        "cuisine": "polska", "meal_type": "śniadanie", "prep_time_min": 3, "cook_time_min": 0,
+        "servings": 1, "difficulty": "łatwy", "tags": ["szybkie", "wegetariańskie", "zdrowe"],
+        "ingredients": [("Granola", 60, "g"), ("Jogurt naturalny", 150, "g"), ("Banan", 0.5, "szt"), ("Maliny", 40, "g")],
+        "instructions": ["Przełóż jogurt do miseczki.", "Posyp granolą.", "Pokrój banana w plastry i ułóż na wierzchu.", "Dodaj maliny i podawaj od razu."]
+    },
+    {
+        "name": "Owsianka z bananem i masłem orzechowym",
+        "description": "Kremowa owsianka z plastrami banana, masłem orzechowym i odrobiną cynamonu.",
+        "cuisine": "polska", "meal_type": "śniadanie", "prep_time_min": 5, "cook_time_min": 7,
+        "servings": 1, "difficulty": "łatwy", "tags": ["wegetariańskie", "zdrowe", "wysokobiałkowe"],
+        "ingredients": [("Płatki owsiane", 50, "g"), ("Mleko 2%", 0.2, "l"), ("Banan", 1, "szt"),
+                        ("Masło orzechowe", 20, "g"), ("Cynamon mielony", 2, "g")],
+        "instructions": ["Wsyp płatki owsiane do garnka i zalej mlekiem.", "Gotuj na małym ogniu 5–7 minut, mieszając.", "Przełóż do miseczki.", "Ułóż plastry banana na wierzchu.", "Dodaj łyżkę masła orzechowego i posyp cynamonem."]
     },
     # ── OBIADY ───────────────────────────────────────────────────
     {
@@ -208,7 +294,8 @@ RECIPES = [
         "servings": 2, "difficulty": "średni", "tags": ["tradycyjne", "polska kuchnia"],
         "ingredients": [("Schab wieprzowy", 0.4, "kg"), ("Mąka pszenna", 30, "g"), ("Jajka", 2, "szt"),
                         ("Bułka tarta", 60, "g"), ("Ziemniaki", 0.5, "kg"), ("Olej rzepakowy", 0.04, "l"),
-                        ("Sól", 3, "g"), ("Pieprz czarny mielony", 1, "g")],
+                        ("Sól", 3, "g"), ("Pieprz czarny mielony", 1, "g"), ("Papryka słodka", 2, "g")],
+        "instructions": ["Rozbij schabu tłuczkiem na cienkie plastry.", "Przygotuj 3 miski: mąkę, roztrzepane jajka, bułkę tartą.", "Dopraw mięso solą i pieprzem, obtocz kolejno w mące, jajku i bułce tartej.", "Smaż na rozgrzanym oleju po 3–4 minuty z każdej strony.", "Ugotuj ziemniaki w osolonej wodzie do miękkości (ok. 20 min)."]
     },
     {
         "name": "Spaghetti bolognese",
@@ -218,7 +305,8 @@ RECIPES = [
         "ingredients": [("Makaron penne", 200, "g"), ("Mielone wieprzowo-wołowe", 250, "g"),
                         ("Passata pomidorowa", 250, "g"), ("Cebula", 0.15, "kg"), ("Czosnek", 0.5, "szt"),
                         ("Oliwa z oliwek", 15, "ml"), ("Sól", 3, "g"), ("Pieprz czarny mielony", 1, "g"),
-                        ("Bazylia suszona", 2, "g")],
+                        ("Bazylia suszona", 2, "g"), ("Oregano suszone", 2, "g")],
+        "instructions": ["Podsmaż pokrojoną cebulę i czosnek na oliwie.", "Dodaj mięso mielone i smaż do zrumienienia.", "Wlej passatę, dodaj bazylię, oregano, sól i pieprz.", "Gotuj sos na małym ogniu 15 minut.", "Ugotuj makaron al dente wg instrukcji na opakowaniu.", "Podawaj makaron z sosem."]
     },
     {
         "name": "Kurczak z ryżem i warzywami",
@@ -227,7 +315,8 @@ RECIPES = [
         "servings": 2, "difficulty": "łatwy", "tags": ["zdrowe", "wysokobiałkowe"],
         "ingredients": [("Pierś z kurczaka", 0.4, "kg"), ("Ryż biały", 0.15, "kg"), ("Marchew", 0.2, "kg"),
                         ("Papryka czerwona", 1, "szt"), ("Cebula", 0.1, "kg"), ("Olej rzepakowy", 0.02, "l"),
-                        ("Sól", 3, "g"), ("Pieprz czarny mielony", 1, "g")],
+                        ("Sól", 3, "g"), ("Pieprz czarny mielony", 1, "g"), ("Papryka słodka", 3, "g"), ("Kurkuma mielona", 2, "g")],
+        "instructions": ["Pokrój pierś z kurczaka w kostkę, dopraw solą, pieprzem, papryką i kurkumą.", "Ugotuj ryż wg instrukcji na opakowaniu.", "Na patelni rozgrzej olej, podsmaż cebulę, dodaj kurczaka i smaż 5–7 minut.", "Dodaj pokrojoną marchew i paprykę, smaż kolejne 5 minut.", "Podawaj kurczaka z warzywami na ryżu."]
     },
     {
         "name": "Zupa pomidorowa z makaronem",
@@ -236,18 +325,20 @@ RECIPES = [
         "servings": 4, "difficulty": "łatwy", "tags": ["tradycyjne", "polska kuchnia", "zupy"],
         "ingredients": [("Passata pomidorowa", 500, "g"), ("Makaron penne", 150, "g"), ("Marchew", 0.2, "kg"),
                         ("Cebula", 0.1, "kg"), ("Masło extra", 20, "g"), ("Śmietana 18%", 100, "ml"),
-                        ("Sól", 5, "g"), ("Pieprz czarny mielony", 1, "g")],
+                        ("Sól", 5, "g"), ("Pieprz czarny mielony", 1, "g"), ("Bazylia suszona", 2, "g")],
+        "instructions": ["Podsmaż pokrojoną cebulę i marchew na maśle.", "Dodaj passatę pomidorową i 500 ml wody.", "Gotuj 15 minut na małym ogniu.", "Dodaj sól, pieprz i opcjonalnie bazylię.", "Ugotuj makaron osobno i dodaj do zupy.", "Podawaj ze śmietaną."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Gulasz z kurczaka z warzywami",
         "description": "Prosty gulasz z piersi kurczaka duszony z papryką, marchewką i ziemniakami.",
         "cuisine": "polska", "meal_type": "obiad", "prep_time_min": 15, "cook_time_min": 30,
         "servings": 2, "difficulty": "łatwy", "tags": ["zdrowe", "wysokobiałkowe", "nowość"],
         "ingredients": [("Pierś z kurczaka", 0.4, "kg"), ("Ziemniaki", 0.5, "kg"), ("Cebula", 0.1, "kg"),
                         ("Papryka czerwona", 1, "szt"), ("Marchew", 0.15, "kg"), ("Passata pomidorowa", 200, "g"),
-                        ("Olej rzepakowy", 0.02, "l"), ("Papryka słodka", 4, "g"), ("Sól", 3, "g")],
+                        ("Olej rzepakowy", 0.02, "l"), ("Papryka słodka", 4, "g"), ("Sól", 3, "g"), ("Tymianek suszony", 2, "g")],
+        "instructions": ["Pokrój kurczaka w kostkę i podsmaż na oleju.", "Dodaj pokrojoną cebulę, marchew i paprykę.", "Dodaj pokrojone ziemniaki i passatę.", "Dopraw papryką słodką, solą i tymiankiem.", "Duś pod przykryciem na małym ogniu ok. 25 minut."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Makaron ze szpinakiem i fetą",
         "description": "Penne w kremowym sosie szpinakowym z fetą i czosnkiem. Obiad w 20 minut.",
         "cuisine": "włoska", "meal_type": "obiad", "prep_time_min": 5, "cook_time_min": 15,
@@ -255,6 +346,41 @@ RECIPES = [
         "ingredients": [("Makaron penne", 200, "g"), ("Mrożony szpinak", 300, "g"), ("Ser feta", 100, "g"),
                         ("Czosnek", 2, "szt"), ("Oliwa z oliwek", 15, "ml"), ("Śmietana 18%", 100, "ml"),
                         ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Ugotuj makaron al dente.", "Na patelni rozgrzej oliwę i podsmaż posiekany czosnek.", "Dodaj rozmrożony szpinak i śmietanę, wymieszaj.", "Dodaj pokruszoną fetę, sól i pieprz.", "Wymieszaj z makaronem i podawaj."]
+    },
+    {
+        "name": "Smażony ryż z kurczakiem i warzywami",
+        "description": "Chiński smażony ryż z kawałkami kurczaka, marchewką, papryką i sosem sojowym.",
+        "cuisine": "azjatycka", "meal_type": "obiad", "prep_time_min": 15, "cook_time_min": 15,
+        "servings": 2, "difficulty": "średni", "tags": ["azjatyckie", "wysokobiałkowe"],
+        "ingredients": [("Ryż biały", 0.15, "kg"), ("Pierś z kurczaka", 0.3, "kg"), ("Marchew", 0.1, "kg"),
+                        ("Papryka czerwona", 1, "szt"), ("Cebula", 0.1, "kg"), ("Czosnek", 2, "szt"),
+                        ("Imbir świeży", 1, "szt"), ("Jajka", 2, "szt"), ("Sos sojowy", 30, "ml"),
+                        ("Olej rzepakowy", 0.02, "l"), ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Ugotuj ryż wg instrukcji na opakowaniu i ostudź (najlepiej ryż z dnia poprzedniego).", "Pokrój kurczaka w kostkę, dopraw solą i pieprzem.", "Na dużej patelni lub woku rozgrzej olej i podsmaż kurczaka 5 minut. Odłóż na bok.", "Na tej samej patelni podsmaż pokrojoną cebulę, marchew i paprykę 3 minuty.", "Dodaj starty imbir i posiekany czosnek, smaż minutę.", "Dodaj ugotowany ryż, wlej sos sojowy i mieszaj 2 minuty.", "Zrób miejsce na środku patelni, wbij jajka i jajecznicuj je.", "Wymieszaj wszystko razem z kurczakiem i podawaj."]
+    },
+    {
+        "name": "Domowy kebab z TikToka",
+        "description": "Viralowy przepis z TikToka — mięso mielone formowane w rulon, pieczone i podawane w tortilli z sosem czosnkowym i warzywami.",
+        "cuisine": "azjatycka", "meal_type": "obiad", "prep_time_min": 20, "cook_time_min": 30,
+        "servings": 4, "difficulty": "średni", "tags": ["viralowe", "TikTok", "kebab"],
+        "ingredients": [("Mielone wieprzowo-wołowe", 500, "g"), ("Jogurt naturalny", 100, "g"),
+                        ("Cebula", 0.15, "kg"), ("Czosnek", 3, "szt"), ("Sól", 4, "g"),
+                        ("Pieprz czarny mielony", 2, "g"), ("Papryka słodka", 4, "g"),
+                        ("Kumin rzymski mielony", 3, "g"), ("Tortilla pszenna", 4, "szt"),
+                        ("Majonez", 30, "g"), ("Sałata lodowa", 0.25, "szt"),
+                        ("Pomidory", 0.15, "kg"), ("Kapusta czerwona", 0.1, "szt")],
+        "instructions": ["Do mięsa mielonego dodaj zblendowaną cebulę, przeciśnięty czosnek, jogurt (100g) oraz wszystkie przyprawy (sól, pieprz, paprykę, kumin).", "Całość bardzo dokładnie wyrób dłońmi przez kilka minut, aby składniki się połączyły.", "Podziel mięso na 3–4 równe porcje. Każdą ułóż na papierze do pieczenia i rozwałkuj na cienki placek (ok. 0,5 cm).", "Za pomocą papieru zwiń mięso w ciasny, zwarty rulon.", "Ułóż rulony na blaszce i piecz w piekarniku rozgrzanym do 190°C przez 25–30 minut.", "Wyjmij z piekarnika, rozwiń z papieru i posiekaj nożem na drobne, podłużne kawałki.", "Przygotuj sos czosnkowy: wymieszaj jogurt (z nowej porcji — weź z lodówki) z majonezem i przeciśniętym czosnkiem.", "Podgrzej tortille, posmaruj sosem, dodaj sałatę, pomidory, kapustę i mięso. Zwiń jak wrap.", "Opcjonalnie przypiecz chwilę na suchej patelni."]
+    },
+    {
+        "name": "Carbonara klasyczna",
+        "description": "Klasyczna włoska carbonara — makaron z boczkiem, żółtkami, parmezanem i pieprzem. Bez śmietany!",
+        "cuisine": "włoska", "meal_type": "obiad", "prep_time_min": 10, "cook_time_min": 15,
+        "servings": 2, "difficulty": "średni", "tags": ["włoska kuchnia", "klasyczne"],
+        "ingredients": [("Makaron penne", 200, "g"), ("Boczek wędzony", 150, "g"),
+                        ("Jajka", 3, "szt"), ("Parmezan tarty", 50, "g"),
+                        ("Pieprz czarny mielony", 2, "g"), ("Sól", 3, "g"), ("Czosnek", 1, "szt")],
+        "instructions": ["Ugotuj makaron al dente w osolonej wodzie. Zachowaj szklankę wody z gotowania.", "Pokrój boczek w paski i smaż na suchej patelni, aż będzie chrupiący. Dodaj rozgnieciony czosnek na ostatnią minutę.", "W miseczce wymieszaj żółtka (z 3 jajek) z tartym parmezanem i pieprzem na kremowy sos.", "Odcedź makaron i od razu wrzuć na patelnię z boczkiem (zdejmij z ognia!).", "Wlej sos jajeczny i szybko mieszaj — ciepło makaronu ugotuje jajka na kremowy sos.", "Jeśli sos jest za gęsty, dodaj odrobinę wody z gotowania makaronu.", "Podawaj od razu, posypany dodatkowym parmezanem i pieprzem."]
     },
     # ── KOLACJE ──────────────────────────────────────────────────
     {
@@ -263,7 +389,8 @@ RECIPES = [
         "cuisine": "grecka", "meal_type": "kolacja", "prep_time_min": 15, "cook_time_min": 0,
         "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "bezglutenowe"],
         "ingredients": [("Pomidory", 0.3, "kg"), ("Ogórek", 1, "szt"), ("Cebula", 0.1, "kg"),
-                        ("Ser feta", 100, "g"), ("Oliwki czarne", 50, "g"), ("Oliwa z oliwek", 20, "ml")],
+                        ("Ser feta", 100, "g"), ("Oliwki czarne", 50, "g"), ("Oliwa z oliwek", 20, "ml"), ("Oregano suszone", 1, "g")],
+        "instructions": ["Pokrój pomidory i ogórka w kostkę.", "Pokrój cebulę w cienkie plasterki.", "Pokrusz fetę na kawałki.", "Wymieszaj warzywa z oliwkami.", "Polej oliwą, dopraw solą i oregano."]
     },
     {
         "name": "Sałatka z łososiem",
@@ -273,6 +400,7 @@ RECIPES = [
         "ingredients": [("Łosoś wędzony", 100, "g"), ("Sałata lodowa", 0.5, "szt"), ("Ogórek", 1, "szt"),
                         ("Pomidory", 0.2, "kg"), ("Oliwa z oliwek", 20, "ml"), ("Sól", 2, "g"),
                         ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Porwij sałatę lodową na kawałki.", "Pokrój ogórka i pomidory.", "Ułóż na talerzu sałatę, warzywa i plastry łososia.", "Polej oliwą, dopraw solą i pieprzem."]
     },
     {
         "name": "Naleśniki z serem",
@@ -281,6 +409,7 @@ RECIPES = [
         "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "tradycyjne"],
         "ingredients": [("Mąka pszenna", 150, "g"), ("Jajka", 2, "szt"), ("Mleko 2%", 0.25, "l"),
                         ("Twaróg półtłusty", 250, "g"), ("Masło extra", 30, "g"), ("Sól", 2, "g")],
+        "instructions": ["Wymieszaj mąkę, jajka, mleko i szczyptę soli na gładkie ciasto.", "Smaż cienkie naleśniki na rozgrzanej patelni z odrobiną masła.", "Wymieszaj twaróg z resztą masła (roztopionego).", "Nadziewaj naleśniki twarożkiem i zwiń w ruloniki."]
     },
     {
         "name": "Tosty z jajkiem i awokado",
@@ -289,8 +418,9 @@ RECIPES = [
         "servings": 2, "difficulty": "łatwy", "tags": ["szybkie", "zdrowe"],
         "ingredients": [("Chleb pszenny", 200, "g"), ("Jajka", 2, "szt"), ("Awokado", 1, "szt"),
                         ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g"), ("Oliwa z oliwek", 10, "ml")],
+        "instructions": ["Opiecz kromki chleba w tosterze lub na patelni.", "Rozgrzej oliwę na patelni i usmaż jajka sadzone.", "Rozgnieć awokado widelcem, dopraw solą i pieprzem.", "Na tosty nałóż pastę z awokado, a na nią jajka sadzone."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Sałatka z kurczakiem i awokado",
         "description": "Sycąca sałatka z grillowanym kurczakiem, awokado i pomidorkami.",
         "cuisine": "polska", "meal_type": "kolacja", "prep_time_min": 10, "cook_time_min": 10,
@@ -298,13 +428,46 @@ RECIPES = [
         "ingredients": [("Pierś z kurczaka", 0.25, "kg"), ("Sałata lodowa", 0.5, "szt"), ("Pomidory", 0.15, "kg"),
                         ("Awokado", 1, "szt"), ("Oliwa z oliwek", 15, "ml"), ("Sól", 2, "g"),
                         ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Pokrój pierś z kurczaka w paski i podsmaż na oliwie z solą i pieprzem.", "Porwij sałatę, pokrój pomidory i awokado.", "Ułóż warzywa na talerzu, a na nich ciepłego kurczaka.", "Polej resztą oliwy."]
     },
-    {   # NOWOŚĆ
+    {
         "name": "Kanapki z twarożkiem i ogórkiem",
         "description": "Lekka kolacja — pełnoziarniste pieczywo z twarożkiem i plasterkami ogórka.",
         "cuisine": "polska", "meal_type": "kolacja", "prep_time_min": 8, "cook_time_min": 0,
         "servings": 2, "difficulty": "łatwy", "tags": ["lekkie", "wegetariańskie", "nowość"],
         "ingredients": [("Chleb pszenny", 150, "g"), ("Twaróg półtłusty", 200, "g"), ("Jogurt naturalny", 40, "g"),
                         ("Ogórek", 1, "szt"), ("Sól", 1, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Wymieszaj twaróg z jogurtem, solą i pieprzem na pastę.", "Pokrój chleb na kromki.", "Posmaruj kromki pastą twarożkową.", "Ułóż plasterki ogórka na kanapkach."]
+    },
+    {
+        "name": "Wrap z kurczakiem i warzywami",
+        "description": "Chrupiący wrap z grillowanym kurczakiem, sałatą, pomidorem i sosem jogurtowym.",
+        "cuisine": "polska", "meal_type": "kolacja", "prep_time_min": 10, "cook_time_min": 10,
+        "servings": 2, "difficulty": "łatwy", "tags": ["szybkie", "wysokobiałkowe"],
+        "ingredients": [("Tortilla pszenna", 2, "szt"), ("Pierś z kurczaka", 0.2, "kg"),
+                        ("Sałata lodowa", 0.25, "szt"), ("Pomidory", 0.1, "kg"),
+                        ("Jogurt naturalny", 60, "g"), ("Czosnek", 1, "szt"),
+                        ("Olej rzepakowy", 0.01, "l"), ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Pokrój kurczaka w paski, dopraw solą i pieprzem.", "Podsmaż kurczaka na oleju na patelni 5–7 minut.", "Przygotuj sos: wymieszaj jogurt z przeciśniętym czosnkiem i solą.", "Podgrzej tortille na suchej patelni.", "Na tortillę nałóż sałatę, plasterki pomidora, kurczaka i polej sosem.", "Zwiń ciasno w wrap i opcjonalnie przypiecz na patelni."]
+    },
+    {
+        "name": "Quesadilla z serem i pieczarkami",
+        "description": "Chrupiąca tortilla z ciągnącym się serem i smażonymi pieczarkami.",
+        "cuisine": "polska", "meal_type": "kolacja", "prep_time_min": 10, "cook_time_min": 10,
+        "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "szybkie"],
+        "ingredients": [("Tortilla pszenna", 2, "szt"), ("Ser żółty gouda", 100, "g"),
+                        ("Pieczarki", 150, "g"), ("Cebula", 0.1, "kg"),
+                        ("Masło extra", 10, "g"), ("Sól", 1, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Pokrój pieczarki w plasterki, a cebulę w drobną kostkę.", "Podsmaż cebulę na maśle, dodaj pieczarki i smaż 5 minut. Dopraw solą i pieprzem.", "Na jedną połowę tortilli nałóż starty ser i pieczarki, złóż na pół.", "Smaż quesadillę na suchej patelni po 2 minuty z każdej strony, aż ser się rozpuści.", "Pokrój na trójkąty i podawaj."]
+    },
+    {
+        "name": "Bruschetta z pomidorami i bazylią",
+        "description": "Włoska bruschetta — chrupiące grzanki z dojrzałymi pomidorami, czosnkiem i bazylią.",
+        "cuisine": "włoska", "meal_type": "kolacja", "prep_time_min": 10, "cook_time_min": 5,
+        "servings": 2, "difficulty": "łatwy", "tags": ["wegetariańskie", "włoska kuchnia", "szybkie"],
+        "ingredients": [("Chleb pszenny", 200, "g"), ("Pomidory", 0.3, "kg"), ("Czosnek", 2, "szt"),
+                        ("Oliwa z oliwek", 20, "ml"), ("Bazylia suszona", 2, "g"),
+                        ("Sól", 2, "g"), ("Pieprz czarny mielony", 1, "g")],
+        "instructions": ["Pokrój chleb na grube kromki i opiecz w piekarniku lub na patelni na złoto.", "Pokrój pomidory w drobną kostkę.", "Wymieszaj pomidory z posiekanym czosnkiem, oliwą, bazylią, solą i pieprzem.", "Natrzyj gorące grzanki przekrojonym ząbkiem czosnku.", "Nałóż mieszankę pomidorową na grzanki i podawaj."]
     },
 ]

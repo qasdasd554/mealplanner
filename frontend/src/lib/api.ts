@@ -44,6 +44,7 @@ export interface Recipe {
   nutrition_total: Nutrition;
   nutrition_per_serving: Nutrition;
   image_url: string | null;
+  instructions: string[];
   is_custom: boolean;
   owner_id: string | null;
 }

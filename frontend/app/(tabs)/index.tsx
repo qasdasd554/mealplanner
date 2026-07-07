@@ -34,6 +34,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState(1);
+  const [swapping, setSwapping] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -54,6 +55,24 @@ export default function HomeScreen() {
       load();
     }, [load]),
   );
+
+  const swapMeal = async (day: number, slot: string) => {
+    if (!plan) return;
+    const key = `${day}-${slot}`;
+    setSwapping(key);
+    try {
+      const updated = await api<MealPlan>("/meal-plans/active/swap", {
+        method: "POST",
+        body: { day, slot },
+      });
+      setPlan(updated);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (e: any) {
+      setError(e.message || "Nie udało się podmienić posiłku");
+    } finally {
+      setSwapping(null);
+    }
+  };
 
   const dayNutrition = plan?.daily_nutrition.find((d) => d.day === selectedDay);
   const dayEntries = (plan?.entries || [])
@@ -211,6 +230,22 @@ export default function HomeScreen() {
                     {entry.prep_time_min + entry.cook_time_min} min
                   </Text>
                 </View>
+                <Pressable
+                  testID={`swap-meal-${entry.slot}`}
+                  style={styles.swapBtn}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    swapMeal(entry.day, entry.slot);
+                  }}
+                  disabled={swapping === `${entry.day}-${entry.slot}`}
+                  hitSlop={8}
+                >
+                  {swapping === `${entry.day}-${entry.slot}` ? (
+                    <ActivityIndicator size="small" color={colors.brand} />
+                  ) : (
+                    <Ionicons name="swap-horizontal-outline" size={18} color={colors.brand} />
+                  )}
+                </Pressable>
                 <Ionicons name="chevron-forward" size={18} color={colors.muted} />
               </Pressable>
             ))}
@@ -369,4 +404,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   mealMeta: { fontFamily: font.regular, fontSize: 12, color: colors.muted, marginTop: 2 },
+  swapBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.brandTertiary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

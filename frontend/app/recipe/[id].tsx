@@ -163,6 +163,28 @@ export default function RecipeDetailScreen() {
           ))}
         </View>
 
+        {recipe.instructions && recipe.instructions.length > 0 && (
+          <>
+            <View style={styles.sectionRow}>
+              <Ionicons name="book-outline" size={20} color={colors.brand} />
+              <Text style={styles.sectionTitle}>Jak przygotować</Text>
+            </View>
+            <View style={styles.instructionsCard}>
+              {recipe.instructions.map((step, idx) => (
+                <View key={idx}>
+                  {idx > 0 && <View style={styles.ingredientDivider} />}
+                  <View style={styles.instructionRow} testID={`instruction-step-${idx}`}>
+                    <View style={styles.stepBadge}>
+                      <Text style={styles.stepBadgeText}>{idx + 1}</Text>
+                    </View>
+                    <Text style={styles.instructionText}>{step}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
         {recipe.is_custom && recipe.owner_id === user?.id && (
           <Pressable
             testID="delete-recipe-button"
@@ -262,6 +284,14 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   tagText: { fontFamily: font.regular, fontSize: 12, color: colors.onBrandTertiary },
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.xl,
+    marginBottom: spacing.md,
+  },
   sectionTitle: {
     fontFamily: font.regular,
     fontSize: 18,
@@ -270,6 +300,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     marginTop: spacing.xl,
     marginBottom: spacing.md,
+  },
+  instructionsCard: {
+    backgroundColor: colors.surfaceSecondary,
+    borderRadius: radius.lg,
+    marginHorizontal: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    ...shadow.card,
+  },
+  instructionRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.md,
+    paddingVertical: 14,
+  },
+  stepBadge: {
+    width: 26,
+    height: 26,
+    borderRadius: radius.pill,
+    backgroundColor: colors.brandTertiary,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+    flexShrink: 0,
+  },
+  stepBadgeText: {
+    fontFamily: font.regular,
+    fontSize: 13,
+    fontWeight: "600",
+    color: colors.brand,
+  },
+  instructionText: {
+    flex: 1,
+    fontFamily: font.regular,
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.onSurface,
   },
   ingredientsCard: {
     backgroundColor: colors.surfaceSecondary,
